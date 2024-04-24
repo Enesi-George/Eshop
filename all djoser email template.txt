@@ -1,0 +1,18 @@
+activation_email.html: Template for the activation email sent to users when they need to activate their account.
+
+password_reset_email.html: Template for the password reset email sent to users when they request a password reset.
+
+password_reset_confirm.html: Template for the password reset confirmation page where users land after clicking the password reset link in the email.
+set_password.html: Template for the set password page where users set a new password after resetting it.
+
+email.html: Base template for email content. This template is used as a wrapper for all email templates.
+
+activation.html: Template for the activation view when users activate their account through the browser.
+
+password_reset.html: Template for the password reset view where users can request a password reset through the browser.
+
+password_reset_done.html: Template for the password reset done view, which is displayed after a password reset request is made.
+
+password_reset_confirm.html: Template for the password reset confirmation view, where users land after clicking the password reset link in the email.
+
+password_reset_complete.html: Template for the password reset complete view, which is displayed after the password has been successfully reset
