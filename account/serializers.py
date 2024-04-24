@@ -1,35 +1,32 @@
-import requests
-from rest_framework import serializers
-from .models import User
+from djoser.serializers import UserSerializer as BaseUserSerializer, UserCreateSerializer as BaseUserCreateSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 
-class UserSerializer(serializers.ModelSerializer):
-    confirm_password = serializers.CharField(
-        required=True, min_length=8, write_only=True
-    )
 
-    class Meta:
-        model = User
-        fields = ('id', 'first_name', 'last_name', 'email', 'username', 'country', 'password', 'confirm_password')
-        extra_kwargs = {
-            'password': {'write_only': True},
-        }
+class UserCreateSerializer(BaseUserCreateSerializer):
+    class Meta(BaseUserCreateSerializer.Meta):
+        fields = ["id","first_name", 'last_name', "email","password"]
+        
+class AdminUserCreateSerializer(BaseUserCreateSerializer):
+    class Meta(BaseUserCreateSerializer.Meta):
+        fields = ["id","first_name", 'last_name', "email","password","role"]
 
-    def validate_confirm_password(self, value):
-        if self.initial_data.get("password") != value:
-            raise serializers.ValidationError("The password and confirm password do not match.")
-        return value
 
-    def validate_country(self, value):
-        # Fetch list of countries from REST Countries API
-        response = requests.get("https://restcountries.com/v3.1/all")
-        countries = [country["name"]["common"] for country in response.json()]
+class UserSerializer(BaseUserSerializer): 
+    class Meta(BaseUserSerializer.Meta):
 
-        # Validate selected country
-        if value not in countries:
-            raise serializers.ValidationError("Invalid country selection.")
-        return value
+        fields = ["id","first_name", "last_name", "email", "date_joined", "role", "is_active"]
 
-    def create(self, validated_data):
-        validated_data.pop("confirm_password", None)
-        user = User.objects.create_user(**validated_data)
-        return user
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token['role'] = user.role  # assuming a "role" field on the user model
+        token['email'] = user.email
+        token['first_name'] = user.first_name
+        token['is_staff'] = user.is_staff
+        return token
