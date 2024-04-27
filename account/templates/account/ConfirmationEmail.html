@@ -1,0 +1,41 @@
+{% load i18n %}
+
+{% block subject %}
+    {% blocktrans %}{{ app_name }}: Your account has been successfully created and activated! {% endblocktrans %}
+{% endblock subject %}
+
+
+{% block html_body %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .container h1{
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+        .farewell{
+            margin: 20px 0px;
+        }
+        
+    </style>
+
+    <div class="container">
+        <h1> Hello, {{user.first_name}}!</h1>
+        <p>{% blocktrans %}Your account has been created and is ready to use!.{% endblocktrans %}</p>
+
+        <p class="farewell">{% trans "Thanks for using our site!" %}</p>
+
+        <p>{% blocktrans %}The {{ app_name }} team{% endblocktrans %}</p>
+    </div>
+{% endblock html_body %}

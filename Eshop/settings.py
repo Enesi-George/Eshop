@@ -49,7 +49,8 @@ ALLOWED_HOSTS = []
 
 # Register User model in admin
 REGISTER_USER_MODEL = True
-AUTH_USER_MODEL = os.getenv("AUTH_USER_MODEL")
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -61,6 +62,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # authentication
     "account",
+    "rest_framework.authtoken",
     "rest_framework_simplejwt",
     "djoser",
     "rest_framework",
@@ -81,6 +83,7 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
 }
+
 
 SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("JWT", "Bearer"),
@@ -109,13 +112,19 @@ DJOSER = {
     "ACTIVATION_URL": "auth/activation/{uid}/{token}",  # change to Frontend url
     "PASSWORD_RESET_CONFIRM_URL": "auth/password-reset/{uid}/{token}",  # change to Frontend url
     "LOGOUT_ON_PASSWORD_CHANGE": False,
-    'TOKEN_LIFETIME': 3600,
+    "TOKEN_LIFETIME": 3600,
     "SERIALIZERS": {
         "user_create": "account.serializers.UserCreateSerializer",
         "current_user": "account.serializers.UserSerializer",
     },
-    "EMAIL": {"password_reset": "account.views.PasswordResetEmail"},
+    "EMAIL": {
+        "password_reset": "account.views.PasswordResetEmail",
+        "activation": "account.email.ActivationEmail",
+        "confirmation": "account.email.ConfirmationEmail",
+    },
 }
+
+AUTH_USER_MODEL = os.getenv("AUTH_USER_MODEL")
 
 
 ROOT_URLCONF = "Eshop.urls"
@@ -148,6 +157,18 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'database_name',
+#         'USER': 'database_user',
+#         'PASSWORD': 'database_password',
+#         'HOST': 'localhost',  # Or the hostname of your PostgreSQL server
+#         'PORT': '5432',  # Default PostgreSQL port
+#     }
+# }
 
 
 # Password validation
@@ -185,22 +206,22 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# EMAIL_BACKEND = os.getenv("EMAIL_BACKEND")
-# EMAIL_HOST = os.getenv("EMAIL_HOST")
-# EMAIL_PORT =os.getenv("EMAIL_PORT")
-# EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")  
-# EMAIL_HOST_PASSWORD = os.getenv("EMAIL_BACKEND")
+
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
+LOGIN_REDIRECT_URL = "/"
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
-EMAIL_HOST_USER = 'dd91c48dc9337e'
-EMAIL_HOST_PASSWORD = '5547bdd3942123'
-EMAIL_PORT = '2525'
+# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_HOST = "sandbox.smtp.mailtrap.io"
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = os.getenv("EMAIL_PORT")

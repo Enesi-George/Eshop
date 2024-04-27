@@ -5,7 +5,7 @@ from random import choices
 from django.contrib.auth import get_user_model
 
 # Rest Routes Imports
-from accounts.utils import send_html_to_email
+from account.utils import send_html_to_email
 
 # Third Imports
 from sotp.services import GenerateSOTP

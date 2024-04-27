@@ -19,7 +19,7 @@ class CanCreateSuperAdmin(permissions.BasePermission):
 
 class IsAdmin(BasePermission):
     def has_permission(self, request, view):
-        return request.user.role=='admin' or request.user.is_staff    
+        return request.user.role=='admin' or request.user.is_staff and request.user.is_active   
 
 class IsSuperUser(BasePermission):
     def has_permission(self, request, view):
