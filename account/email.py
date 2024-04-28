@@ -2,17 +2,18 @@ from djoser import email
 from djoser import utils
 from djoser.conf import settings
 from django.contrib.auth.tokens import default_token_generator
-
+from Eshop.settings import BASE_DIR, DEFAULT_APP_URL
+from urllib3.util import parse_url
+from os import path
+from Eshop.settings import MY_APP_NAME
 
 
 class ActivationEmail(email.ActivationEmail):
-    template_name = 'account/ActivationEmail.html'
+    template_name = "account/ActivationEmail.html"
 
     def get_context_data(self):
         # ActivationEmail can be deleted
         context = super().get_context_data()
-        MY_APP_NAME = "KioskConnect"
-
         user = context.get("user")
         context["uid"] = utils.encode_uid(user.pk)
         context["token"] = default_token_generator.make_token(user)
@@ -22,22 +23,28 @@ class ActivationEmail(email.ActivationEmail):
 
 
 class ConfirmationEmail(email.ConfirmationEmail):
-    template_name = 'account/ConfirmationEmail.html'
+    template_name = "account/ConfirmationEmail.html"
 
     def get_context_data(self):
         context = super().get_context_data()
-        
-        MY_APP_NAME = "KioskConnect"
         context["app_name"] = MY_APP_NAME
         return context
 
-# class PasswordResetEmail(email.PasswordResetEmail):
-# 	template_name = path.join(BASE_DIR,  "templates/emails/password_reset.html")
-# 	def get_context_data(self):
-#         # PasswordResetEmail can be deleted
-# 		context = super().get_context_data()
-# 		url = parse_url(DEFAULT_APP_URL)
-# 		context["domain"] = url.hostname
-# 		context["protocol"] = url.scheme
-# 		print(f"{context['protocol']}{DEFAULT_APP_URL}")
-# 		return context
+
+class PasswordResetEmail(email.PasswordResetEmail):
+    template_name = "account/PasswordResetEmail.html"
+
+    def get_context_data(self):
+        context = super().get_context_data()
+        url = parse_url(DEFAULT_APP_URL)
+        context["app_name"] = MY_APP_NAME
+        return context
+
+
+class PasswordChangedConfirmationEmail(email.PasswordChangedConfirmationEmail):
+    template_name = "account/PasswordChangedConfirmationEmail.html"
+
+    def get_context_data(self):
+        context = super().get_context_data()
+        context["app_name"] = MY_APP_NAME
+        return context

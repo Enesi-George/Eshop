@@ -83,7 +83,7 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
 }
-
+MY_APP_NAME = os.getenv("MY_APP_NAME")
 
 SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("JWT", "Bearer"),
@@ -107,7 +107,7 @@ SIMPLE_JWT = {
 DJOSER = {
     "SEND_ACTIVATION_EMAIL": True,
     "SEND_CONFIRMATION_EMAIL": True,
-    "PASSWORD_CHANGED_EMAIL_CONFIRMATION": False,
+    "PASSWORD_CHANGED_EMAIL_CONFIRMATION": True,
     "USERNAME_CHANGED_EMAIL_CONFIRMATION": False,
     "ACTIVATION_URL": "auth/activation/{uid}/{token}",  # change to Frontend url
     "PASSWORD_RESET_CONFIRM_URL": "auth/password-reset/{uid}/{token}",  # change to Frontend url
@@ -118,9 +118,11 @@ DJOSER = {
         "current_user": "account.serializers.UserSerializer",
     },
     "EMAIL": {
-        "password_reset": "account.views.PasswordResetEmail",
+        "password_reset": "account.email.PasswordResetEmail",
         "activation": "account.email.ActivationEmail",
         "confirmation": "account.email.ConfirmationEmail",
+        'password_changed_confirmation': 'account.email.PasswordChangedConfirmationEmail',
+
     },
 }
 
@@ -219,7 +221,7 @@ EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
 LOGIN_REDIRECT_URL = "/"
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 EMAIL_HOST = "sandbox.smtp.mailtrap.io"
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
