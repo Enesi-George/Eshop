@@ -3,9 +3,11 @@ from django.shortcuts import render
 from djoser.views import UserViewSet as DjoserUserViewSet
 from .permissions import *
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.generics import ListAPIView, RetrieveAPIView, DestroyAPIView
 from .models import User
+from .email import PasswordResetEmail
 from .serializers import *
 
 
@@ -92,5 +94,6 @@ class UserListAndDetail(ListAPIView, RetrieveAPIView, DestroyAPIView):
             )
 
 
+# login
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
