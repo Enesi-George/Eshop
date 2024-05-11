@@ -15,6 +15,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from datetime import timedelta
 from django.utils.functional import LazyObject, empty
+import cloudinary
 
 load_dotenv()
 
@@ -62,10 +63,13 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # authentication
     "account",
+    "shop",
     "rest_framework.authtoken",
     "rest_framework_simplejwt",
     "djoser",
     "rest_framework",
+    "cloudinary",
+    "cloudinary_storage",
 ]
 
 MIDDLEWARE = [
@@ -121,8 +125,7 @@ DJOSER = {
         "password_reset": "account.email.PasswordResetEmail",
         "activation": "account.email.ActivationEmail",
         "confirmation": "account.email.ConfirmationEmail",
-        'password_changed_confirmation': 'account.email.PasswordChangedConfirmationEmail',
-
+        "password_changed_confirmation": "account.email.PasswordChangedConfirmationEmail",
     },
 }
 
@@ -221,9 +224,23 @@ EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
 LOGIN_REDIRECT_URL = "/"
+
+
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 EMAIL_HOST = "sandbox.smtp.mailtrap.io"
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = os.getenv("EMAIL_PORT")
+
+# image storage configuration
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": os.getenv("CLOUD_NAME"),
+    "API_KEY": os.getenv("API_KEY"),
+    "API_SECRET": os.getenv("API_SECRET"),
+}
+
+# add config
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+
+# celery configuration for task queuing. using reddis broker
+CELERY_BROKER_URL = "redis://localhost:6379/0"

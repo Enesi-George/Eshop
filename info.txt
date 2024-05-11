@@ -1,0 +1,4 @@
+# Start a Celery worker to process tasks. Run the following command on the terminal:
+
+celery -A Eshop worker --loglevel=info
+
