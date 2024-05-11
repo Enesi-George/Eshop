@@ -34,3 +34,13 @@ class IsOwnerOrReadOnly(BasePermission):
         if request.method in SAFE_METHODS:
             return True
         return obj == request.user
+class AllowAny(BasePermission):
+    """
+    Allow any access.
+    This isn't strictly required, since you could use an empty
+    permission_classes list, but it's useful because it makes the intention
+    more explicit.
+    """
+
+    def has_permission(self, request, view):
+        return True

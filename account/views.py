@@ -7,9 +7,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.generics import ListAPIView, RetrieveAPIView, DestroyAPIView
 from .models import User
-from .email import PasswordResetEmail
 from .serializers import *
-
 
 # Create your views here.
 # ordinary user registration
@@ -93,7 +91,7 @@ class UserListAndDetail(ListAPIView, RetrieveAPIView, DestroyAPIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
-
-# login
+#login
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
+

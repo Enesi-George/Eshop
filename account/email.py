@@ -1,3 +1,4 @@
+from celery import shared_task
 from djoser import email
 from djoser import utils
 from djoser.conf import settings
@@ -8,6 +9,7 @@ from os import path
 from Eshop.settings import MY_APP_NAME
 
 
+@shared_task
 class ActivationEmail(email.ActivationEmail):
     template_name = "account/ActivationEmail.html"
 
@@ -22,6 +24,7 @@ class ActivationEmail(email.ActivationEmail):
         return context
 
 
+@shared_task
 class ConfirmationEmail(email.ConfirmationEmail):
     template_name = "account/ConfirmationEmail.html"
 
@@ -31,6 +34,7 @@ class ConfirmationEmail(email.ConfirmationEmail):
         return context
 
 
+@shared_task
 class PasswordResetEmail(email.PasswordResetEmail):
     template_name = "account/PasswordResetEmail.html"
 
@@ -41,6 +45,7 @@ class PasswordResetEmail(email.PasswordResetEmail):
         return context
 
 
+@shared_task
 class PasswordChangedConfirmationEmail(email.PasswordChangedConfirmationEmail):
     template_name = "account/PasswordChangedConfirmationEmail.html"
 
