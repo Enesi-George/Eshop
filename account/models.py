@@ -50,6 +50,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=100, validators=[name_validator])
     last_name = models.CharField(max_length=100, validators=[name_validator])
     is_active = models.BooleanField(default=False)
+    activation_email_reminder = models.DateTimeField(blank=True, null=True)
     is_staff = models.BooleanField(default=False)
     contact_number = models.CharField(
         max_length=20, null= True, blank=True, unique= True, validators=[contact_number_validator]

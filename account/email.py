@@ -1,4 +1,3 @@
-from celery import shared_task
 from djoser import email
 from djoser import utils
 from djoser.conf import settings
@@ -7,9 +6,18 @@ from Eshop.settings import BASE_DIR, DEFAULT_APP_URL
 from urllib3.util import parse_url
 from os import path
 from Eshop.settings import MY_APP_NAME
+from .models import User
+
+from celery import shared_task
+from celery.task import periodic_task
+from celery.schedules import crontab
+from django.utils import timezone
 
 
-@shared_task
+# if using celery uncomment the decorator passed to all class.
+
+
+# @shared_task
 class ActivationEmail(email.ActivationEmail):
     template_name = "account/ActivationEmail.html"
 
@@ -24,7 +32,28 @@ class ActivationEmail(email.ActivationEmail):
         return context
 
 
-@shared_task
+@periodic_task(run_every=crontab(hour="*/12"))
+def send_activation_email_periodically():
+    # Get unverified users
+    unverified_users = User.objects.filter(is_active=False)
+
+    for user in unverified_users:
+        # Check if activation email has not been sent within the last 12 hours
+        if (
+            not user.activation_email_reminder
+            or (timezone.now() - user.activation_email_reminder).total_seconds()
+            >= 43200
+        ):
+            # Send activation email
+            activation_email = ActivationEmail()
+            activation_email.send(user=user)
+
+            # Update user's activation_email_sent_at timestamp
+            user.activation_email_reminder = timezone.now()
+            user.save()
+
+
+# @shared_task
 class ConfirmationEmail(email.ConfirmationEmail):
     template_name = "account/ConfirmationEmail.html"
 
@@ -34,7 +63,7 @@ class ConfirmationEmail(email.ConfirmationEmail):
         return context
 
 
-@shared_task
+# @shared_task
 class PasswordResetEmail(email.PasswordResetEmail):
     template_name = "account/PasswordResetEmail.html"
 
@@ -45,7 +74,7 @@ class PasswordResetEmail(email.PasswordResetEmail):
         return context
 
 
-@shared_task
+# @shared_task
 class PasswordChangedConfirmationEmail(email.PasswordChangedConfirmationEmail):
     template_name = "account/PasswordChangedConfirmationEmail.html"
 
